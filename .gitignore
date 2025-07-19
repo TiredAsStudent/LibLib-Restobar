@@ -18,6 +18,7 @@ client/dist-ssr/
 
 # Environment Variables
 server/.env
+client/.env
 
 # Editor Directories
 .vscode/*

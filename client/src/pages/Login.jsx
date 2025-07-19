@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import SideLogo from "../assets/liblibRestBar.jpg";
 
@@ -11,9 +11,9 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    login(form);
+    await login(form);
   }
 
   return (
@@ -38,6 +38,7 @@ function Login() {
               <input
                 type="text"
                 name="username"
+                id="username"
                 placeholder="Username"
                 required
                 value={form.username}
@@ -51,6 +52,7 @@ function Login() {
               <input
                 type="password"
                 name="password"
+                id="password"
                 placeholder="Password"
                 required
                 value={form.password}
