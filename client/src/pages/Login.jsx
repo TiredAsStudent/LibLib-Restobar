@@ -1,19 +1,33 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SideLogo from "../assets/liblibRestBar.jpg";
 
 function Login() {
-  const { login } = useAuth();
+  const navigate = useNavigate();
+  const { login, loading } = useAuth();
   const [form, setForm] = useState({ username: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
+  function togglePassword() {
+    setShowPassword((prev) => !prev);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
-    await login(form);
+    const result = await login(form);
+
+    if (result?.success) {
+      const role = result.role.toLowerCase();
+      if (role === "admin") navigate("/admin");
+      else if (role === "staff_menu") navigate("/menu");
+      else if (role === "staff_kitchen") navigate("/kitchen");
+      else navigate("/");
+    }
   }
 
   return (
@@ -24,7 +38,7 @@ function Login() {
           <form
             onSubmit={handleSubmit}
             className="w-full max-w-sm space-y-6"
-            aria-label="login form"
+            aria-label="Login form"
           >
             <header className="text-center">
               <h1 className="text-3xl font-bold text-yellow-300 mb-1">
@@ -50,7 +64,7 @@ function Login() {
             <div className="flex items-center bg-gray-100 px-3 py-2 rounded-xl border-2 border-[#39110c]">
               <i className="bxr  bxs-lock-keyhole text-orange-500 mr-2 text-3xl"></i>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 id="password"
                 placeholder="Password"
@@ -59,6 +73,12 @@ function Login() {
                 onChange={handleChange}
                 className="flex-1 bg-transparent outline-none text-gray-900 font-medium"
               />
+              <i
+                className={`bxr text-gray-500 ml-2 text-2xl ${
+                  showPassword ? "bxs-eye" : "bxs-eye-slash"
+                }`}
+                onClick={togglePassword}
+              ></i>
             </div>
 
             <div className="text-right">
@@ -69,9 +89,14 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-yellow-300 hover:bg-amber-400 text-black font-bold py-2 rounded-xl transition"
+              disabled={loading}
+              className={`w-full ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-amber-400"
+              } text-black font-bold py-2 rounded-xl transition`}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>
