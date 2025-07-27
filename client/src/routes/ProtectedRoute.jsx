@@ -19,9 +19,9 @@ function ProtectedRoute({ children, requiredRole }) {
       case "admin":
         return <Navigate to="/admin" replace />;
       case "staff_menu":
-        return <Navigate to="/menu" replace />;
+        return <Navigate to="/staff/menu" replace />;
       case "staff_kitchen":
-        return <Navigate to="/kitchen" replace />;
+        return <Navigate to="/staff/kitchen" replace />;
       default:
         return <Navigate to="/" replace />;
     }

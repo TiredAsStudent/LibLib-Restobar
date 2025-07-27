@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { login, logout, refreshToken } from "../services/authService.js";
 import toast from "react-hot-toast";
 
@@ -8,6 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // On initial load, refresh token using HTTP-only cookie
   useEffect(() => {
@@ -46,16 +48,20 @@ export function AuthProvider({ children }) {
 
       setUser(user);
       setAccessToken(accessToken);
-      toast.success("Login successful!");
 
-      return { success: true, role: user.role };
+      const role = user.role.toLowerCase();
+
+      if (role === "admin") navigate("/admin");
+      else if (role === "staff_menu") navigate("/staff/menu");
+      else if (role === "staff_kitchen") navigate("/staff/kitchen");
+      else navigate("/");
+
+      toast.success("Login successful!");
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
 
       const errorMessage = err.response?.data?.message || "Login failed";
       toast.error(errorMessage);
-
-      return { success: false };
     } finally {
       setLoading(false);
     }
@@ -66,6 +72,9 @@ export function AuthProvider({ children }) {
       await logout();
       setUser(null);
       setAccessToken(null);
+
+      navigate("/");
+
       toast.success("Logged out successfully!");
     } catch {
       toast.error("Logout failed");

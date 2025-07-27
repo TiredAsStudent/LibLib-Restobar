@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SideLogo from "../assets/liblibRestBar.jpg";
 
 function Login() {
-  const navigate = useNavigate();
   const { login, loading } = useAuth();
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -19,15 +18,7 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const result = await login(form);
-
-    if (result?.success) {
-      const role = result.role.toLowerCase();
-      if (role === "admin") navigate("/admin");
-      else if (role === "staff_menu") navigate("/menu");
-      else if (role === "staff_kitchen") navigate("/kitchen");
-      else navigate("/");
-    }
+    await login(form);
   }
 
   return (
