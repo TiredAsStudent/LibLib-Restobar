@@ -1,24 +1,24 @@
-import axios from "../utils/axiosInstance.js";
+import axiosInstance from "../utils/axiosInstance.js";
 
 export const login = async (credentials) => {
-  const res = await axios.post("/auth/login", credentials, {
+  const res = await axiosInstance.post("/auth/login", credentials, {
     withCredentials: true,
   });
-  return res.data; // { accessToken, user }
+  return res.data;
 };
 
 export const refreshToken = async () => {
-  const res = await axios.get("/auth/refresh", {
+  const res = await axiosInstance.get("/auth/refresh", {
     withCredentials: true,
   });
-  return res.data; // { accessToken, user }
+  return res.data;
 };
 
 export const logout = async () => {
-  await axios.post("/auth/logout", {}, { withCredentials: true });
+  await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
 };
 
-export const authHeader = (token) => ({
+export const getAuthHeaderConfig = (token) => ({
   headers: {
     Authorization: `Bearer ${token}`,
   },

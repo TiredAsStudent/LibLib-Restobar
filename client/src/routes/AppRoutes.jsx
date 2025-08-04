@@ -5,7 +5,7 @@ import LogoLoader from "../components/loaders/LogoLoader";
 
 import Login from "../pages/Login";
 import Notfound from "../pages/Notfound";
-import QRViewPage from "../pages/QRViewPage";
+import QRViewPage from "../pages/QRViewPage"; //New page also no data
 const AdminLayout = lazy(() => import("../layout/AdminLayout"));
 const StaffMenuLayout = lazy(() => import("../layout/StaffMenuLayout"));
 const StaffKitchenLayout = lazy(() => import("../layout/StaffKitchenLayout"));

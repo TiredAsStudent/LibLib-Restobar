@@ -1,10 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/generateTokens.js";
-import jwt from "jsonwebtoken";
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from "../services/authService.js";
 
 export const registerUser = async (req, res) => {
   const { username, password, role } = req.body;
@@ -20,10 +20,9 @@ export const registerUser = async (req, res) => {
       role,
     });
     res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Registration failed", error: error.message });
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Registration failed" });
   }
 };
 
@@ -39,8 +38,8 @@ export const loginUser = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const accessToken = signAccessToken(user);
+    const refreshToken = signRefreshToken(user);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -53,8 +52,8 @@ export const loginUser = async (req, res) => {
       accessToken,
       user: { id: user._id, username: user.username, role: user.role },
     });
-  } catch (error) {
-    console.error("Login error:", error);
+  } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({
       message: "Something went wrong during login. Please try again later.",
     });
@@ -68,13 +67,13 @@ export const refreshAccessToken = async (req, res) => {
     return res.status(401).json({ message: "No refresh token provided" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const decoded = verifyRefreshToken(token);
 
     //fetch latest user and role from DB
     const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const accessToken = generateAccessToken(user);
+    const accessToken = signAccessToken(user);
 
     res.status(200).json({
       accessToken,
