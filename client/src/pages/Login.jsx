@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import SideLogo from "../assets/liblibRestBar.jpg";
+import { CircleUserRound, Lock, EyeOff, Eye } from "lucide-react";
 
 function Login() {
   const { login, loading } = useAuth();
@@ -39,7 +40,7 @@ function Login() {
             </header>
 
             <div className="flex items-center bg-gray-100 px-3 py-2 rounded-xl border-2 border-[#39110c]">
-              <i className="bxr  bxs-user-circle text-orange-500 mr-2 text-3xl"></i>
+              <CircleUserRound className="text-orange-500 mr-2" size={28} />
               <input
                 type="text"
                 name="username"
@@ -53,7 +54,7 @@ function Login() {
             </div>
 
             <div className="flex items-center bg-gray-100 px-3 py-2 rounded-xl border-2 border-[#39110c]">
-              <i className="bxr  bxs-lock-keyhole text-orange-500 mr-2 text-3xl"></i>
+              <Lock className="text-orange-500 mr-2" size={28} />
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
@@ -64,12 +65,13 @@ function Login() {
                 onChange={handleChange}
                 className="flex-1 bg-transparent outline-none text-gray-900 font-medium"
               />
-              <i
-                className={`bxr text-gray-500 ml-2 text-2xl ${
-                  showPassword ? "bxs-eye" : "bxs-eye-slash"
-                }`}
-                onClick={togglePassword}
-              ></i>
+              <button type="button" onClick={togglePassword}>
+                {showPassword ? (
+                  <Eye className="text-gray-500 ml-2" size={25} />
+                ) : (
+                  <EyeOff className="text-gray-500 ml-2" size={25} />
+                )}
+              </button>
             </div>
 
             <div className="text-right">
