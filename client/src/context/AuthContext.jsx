@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, logout, refreshToken } from "../services/authService.js";
+import {
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+} from "../services/authService.js";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext();
@@ -11,45 +15,36 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // On initial load, refresh token using HTTP-only cookie
+  // RefreshToken
+  async function refreshToken() {
+    try {
+      const { accessToken, user } = await refreshAccessToken();
+      setUser(user);
+      setAccessToken(accessToken);
+    } catch (err) {
+      setUser(null);
+      setAccessToken(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // On initial load
   useEffect(() => {
-    let isMounted = true;
-
-    const initializeAuth = async () => {
-      try {
-        const { accessToken, user } = await refreshToken();
-        if (isMounted) {
-          setAccessToken(accessToken);
-          setUser(user);
-        }
-      } catch (error) {
-        console.error("Auth init failed:", error.message);
-        if (isMounted) {
-          setUser(null);
-          setAccessToken(null);
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    return () => {
-      isMounted = false;
-    };
+    refreshToken();
   }, []);
 
+  // Login
   async function handleLogin({ username, password }) {
     try {
       setLoading(true);
 
-      const { accessToken, user } = await login({ username, password }); // { accessToken, user }
+      const { accessToken, user } = await loginUser({ username, password }); // { accessToken, user }
 
       setUser(user);
       setAccessToken(accessToken);
 
-      const role = user.role.toLowerCase();
+      const role = user.role?.toLowerCase();
 
       if (role === "admin") navigate("/admin");
       else if (role === "staff_menu") navigate("/staff/menu");
@@ -58,8 +53,6 @@ export function AuthProvider({ children }) {
 
       toast.success("Login successful!");
     } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
-
       const errorMessage = err.response?.data?.message || "Login failed";
       toast.error(errorMessage);
     } finally {
@@ -67,9 +60,10 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Logout
   async function handleLogout() {
     try {
-      await logout();
+      await logoutUser();
       setUser(null);
       setAccessToken(null);
 

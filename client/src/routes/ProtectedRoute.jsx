@@ -5,9 +5,7 @@ import LogoLoader from "../components/loaders/LogoLoader";
 function ProtectedRoute({ children, requiredRole }) {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <LogoLoader />;
-  }
+  if (loading) return <LogoLoader />;
 
   if (!user) return <Navigate to="/" replace />;
 

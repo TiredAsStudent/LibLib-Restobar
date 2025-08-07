@@ -31,11 +31,11 @@ export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    if (!username || !password)
+      return res.status(400).json({ message: "Missing credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    const user = await User.findOne({ username });
+    if (!user || !(await bcrypt.compare(password, user.password)))
       return res.status(401).json({ message: "Invalid credentials" });
 
     const accessToken = signAccessToken(user);
@@ -48,13 +48,13 @@ export const loginUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       accessToken,
       user: { id: user._id, username: user.username, role: user.role },
     });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Something went wrong during login. Please try again later.",
     });
   }
@@ -69,19 +69,20 @@ export const refreshAccessToken = async (req, res) => {
   try {
     const decoded = verifyRefreshToken(token);
 
-    //fetch latest user and role from DB
     const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const accessToken = signAccessToken(user);
 
-    res.status(200).json({
+    return res.status(200).json({
       accessToken,
       user: { id: user._id, username: user.username, role: user.role },
     });
   } catch (err) {
     console.error("Refresh error:", err);
-    return res.status(403).json({ message: "Invalid refresh token" });
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired refresh token" });
   }
 };
 
@@ -92,5 +93,5 @@ export const logoutUser = (req, res) => {
     secure: true,
     sameSite: "None",
   });
-  res.status(200).json({ message: "Logged out successfully" });
+  return res.status(200).json({ message: "Logged out successfully" });
 };
