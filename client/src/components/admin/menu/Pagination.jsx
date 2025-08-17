@@ -12,8 +12,8 @@ function Pagination({ total, page, pageSize, onPageChange, onPageSizeChange }) {
           <button
             onClick={() => onPageChange(Math.max(1, page - 1))}
             disabled={page <= 1}
-            className="px-3 py-1.5 rounded-md border text-gray-700 bg-white shadow-sm 
-                 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 rounded-md border text-white bg-orange-500 shadow-sm 
+                 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Prev
           </button>
@@ -26,8 +26,8 @@ function Pagination({ total, page, pageSize, onPageChange, onPageSizeChange }) {
           <button
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
             disabled={page >= totalPages}
-            className="px-3 py-1.5 rounded-md border text-gray-700 bg-white shadow-sm 
-                 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 rounded-md border text-white bg-orange-500 shadow-sm 
+                 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
@@ -39,8 +39,7 @@ function Pagination({ total, page, pageSize, onPageChange, onPageSizeChange }) {
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="border rounded-md px-3 py-1.5 bg-white shadow-sm focus:ring-2 
-                 focus:ring-orange-500 focus:outline-none"
+            className="border rounded-md px-3 py-1.5 shadow-sm bg-orange-500 hover:bg-orange-600 text-white"
           >
             {[8, 12, 16, 24].map((n) => (
               <option key={n} value={n}>
