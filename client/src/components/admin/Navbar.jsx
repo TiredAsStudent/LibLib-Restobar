@@ -53,12 +53,10 @@ function Navbar({ toggleSidebar }) {
         <LiveTime />
 
         {/* User Info */}
-        {user && (
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm text-gray-700">
-            <UserCircle className="w-5 h-5 text-orange-500" />
-            <span className="font-bold">{user.username}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm text-gray-700">
+          <UserCircle className="w-5 h-5 text-orange-500" />
+          <span className="font-bold">{user?.username || "Guest"}</span>
+        </div>
       </div>
     </header>
   );

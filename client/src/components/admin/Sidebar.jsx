@@ -7,19 +7,11 @@ import navItems from "./navItems";
 function Sidebar({ openLogoutModal }) {
   return (
     <>
-      <aside
-        className="bg-[#39110c] text-yellow-300 w-64 min-h-screen p-4 hidden md:flex flex-col justify-between shadow-xl"
-        role="navigation"
-        aria-label="Admin sidebar navigation"
-      >
+      <aside className="bg-[#39110c] text-yellow-300 w-64 min-h-screen p-4 hidden md:flex flex-col justify-between shadow-xl">
         <div>
           <div className="p-4 border-b border-orange-500">
             {/* Logo and Navigation */}
-            <header
-              className="flex items-center justify-center gap-3 "
-              role="banner"
-              aria-label="App brand"
-            >
+            <header className="flex items-center justify-center gap-3 ">
               <img
                 src={Logo}
                 alt="Liblib Logo"
@@ -38,7 +30,6 @@ function Sidebar({ openLogoutModal }) {
                 key={item.path}
                 to={item.path}
                 end={item.path === "/admin"}
-                role="menuitem"
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200
                  ${

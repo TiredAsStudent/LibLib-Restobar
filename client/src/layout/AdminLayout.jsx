@@ -22,10 +22,7 @@ function AdminLayout() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div
-      className="flex h-screen bg-gray-100 overflow-hidden"
-      role="application"
-    >
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
       <Sidebar openLogoutModal={openLogoutModal} />
       <MobileSidebar
@@ -37,10 +34,7 @@ function AdminLayout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         <Navbar toggleSidebar={toggleSidebar} />
-        <section
-          className="flex-1 overflow-y-auto px-4 py-6 md:px-6 bg-white"
-          aria-label="Admin main content"
-        >
+        <section className="flex-1 overflow-y-auto px-4 py-6 md:px-6 bg-white">
           <Outlet />
         </section>
       </div>
