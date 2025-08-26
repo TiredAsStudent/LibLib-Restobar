@@ -1,14 +1,12 @@
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { UserCircle, Menu } from "lucide-react";
-import { useSidebar } from "../../context/SidebarContext";
 import LiveTime from "../common/LiveTime";
 import { memo, useMemo } from "react";
 
-function Navbar() {
+function Navbar({ toggleSidebar }) {
   const location = useLocation();
   const { user } = useAuth();
-  const { toggleSidebar } = useSidebar();
 
   // Tab title
   const pageTitles = {

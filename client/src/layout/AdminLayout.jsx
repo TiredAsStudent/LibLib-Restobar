@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 
 function AdminLayout() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // moved here
   const { logout } = useAuth();
 
   const openLogoutModal = () => setIsLogoutModalOpen(true);
@@ -18,6 +19,8 @@ function AdminLayout() {
     closeLogoutModal();
   };
 
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
   return (
     <div
       className="flex h-screen bg-gray-100 overflow-hidden"
@@ -25,11 +28,15 @@ function AdminLayout() {
     >
       {/* Sidebar */}
       <Sidebar openLogoutModal={openLogoutModal} />
-      <MobileSidebar openLogoutModal={openLogoutModal} />
+      <MobileSidebar
+        openLogoutModal={openLogoutModal}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <Navbar />
+        <Navbar toggleSidebar={toggleSidebar} />
         <section
           className="flex-1 overflow-y-auto px-4 py-6 md:px-6 bg-white"
           aria-label="Admin main content"
