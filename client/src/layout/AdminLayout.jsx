@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 
 function AdminLayout() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // moved here
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { logout } = useAuth();
 
   const openLogoutModal = () => setIsLogoutModalOpen(true);
