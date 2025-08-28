@@ -5,8 +5,7 @@ function LogoutButton({ openLogoutModal }) {
     <>
       <button
         onClick={openLogoutModal}
-        className="flex items-center gap-2 px-4 py-2 rounded-md bg-red-500 text-white text-sm font-medium hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200"
-        aria-label="Logout"
+        className="flex items-center gap-2 px-4 py-2 rounded-md bg-red-500 text-white text-sm font-medium hover:bg-red-600"
         type="button"
       >
         <LogOut size={18} />
