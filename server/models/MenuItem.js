@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const VariantSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
   },
   { _id: false }
@@ -10,19 +10,20 @@ const VariantSchema = new mongoose.Schema(
 
 const ImageSchema = new mongoose.Schema(
   {
-    url: { type: String },
+    url: { type: String, trim: true },
   },
   { _id: false }
 );
 
 const MenuItemSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
     category: {
       type: String,
       required: true,
       index: true,
       default: "Uncategorized",
+      trim: true,
     },
     basePrice: { type: Number, required: true, min: 0 },
     image: ImageSchema,

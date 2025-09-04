@@ -1,30 +1,27 @@
 import MenuItem from "../models/MenuItem.js";
-import { getIO } from "../config/socket.js";
 import fs from "fs";
 import { toAbsUploadPath } from "../utils/file.js";
 import { normalizeMenuPayload } from "../utils/payload.js";
 
+// CREATE
 export const createItem = async (req, res, next) => {
   try {
     const payload = normalizeMenuPayload(req.body);
     payload.category ??= "Uncategorized";
     payload.availability ??= true;
 
-    if (req.file) payload.image = { url: `/uploads/menu/${req.file.filename}` };
+    if (req.file) {
+      payload.image = { url: `/uploads/menu/${req.file.filename}` };
+    }
 
     const item = await MenuItem.create(payload);
-
-    getIO()
-      ?.to(`store:${req.body.storeId ?? "default"}:menu`)
-      .emit("menu:item_created", { item });
-
     res.status(201).json(item);
   } catch (err) {
     next(err);
   }
 };
 
-// READ
+// READ (list items with filters + pagination)
 export const listItems = async (req, res, next) => {
   try {
     const {
@@ -37,12 +34,18 @@ export const listItems = async (req, res, next) => {
       limit = 20,
       sort,
     } = req.query;
+
     const q = {};
 
-    if (search) q.name = { $regex: search, $options: "i" };
+    // Only search by item name
+    if (search) {
+      q.name = { $regex: search, $options: "i" };
+    }
+
     if (category) q.category = category;
-    if (availability !== undefined)
+    if (availability !== undefined) {
       q.availability = availability === "true" || availability === "1";
+    }
 
     if (minPrice !== undefined || maxPrice !== undefined) {
       q.basePrice = {};
@@ -90,6 +93,7 @@ export const updateItem = async (req, res, next) => {
     const payload = normalizeMenuPayload(req.body);
 
     if (req.file) {
+      // remove old image if exists
       if (item.image?.url) {
         const oldAbs = toAbsUploadPath(item.image.url);
         if (fs.existsSync(oldAbs)) fs.unlinkSync(oldAbs);
@@ -100,10 +104,6 @@ export const updateItem = async (req, res, next) => {
     const updated = await MenuItem.findByIdAndUpdate(req.params.id, payload, {
       new: true,
     });
-
-    getIO()
-      ?.to(`store:${req.body.storeId ?? "default"}:menu`)
-      .emit("menu:item_updated", { item: updated });
 
     res.json(updated);
   } catch (err) {
@@ -117,17 +117,13 @@ export const deleteItem = async (req, res, next) => {
     const item = await MenuItem.findById(req.params.id);
     if (!item) return res.status(404).json({ message: "Item not found" });
 
+    // remove image if exists
     if (item.image?.url) {
       const abs = toAbsUploadPath(item.image.url);
       if (fs.existsSync(abs)) fs.unlinkSync(abs);
     }
 
     await item.deleteOne();
-
-    const storeId = req.body?.storeId ?? req.query?.storeId ?? "default";
-    getIO()
-      ?.to(`store:${storeId}:menu`)
-      .emit("menu:item_deleted", { itemId: req.params.id });
 
     res.json({ success: true });
   } catch (err) {
