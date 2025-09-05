@@ -1,31 +1,44 @@
 export function normalizeMenuPayload(body = {}) {
-  const out = {};
+  const payload = {};
 
-  if (typeof body.name === "string") out.name = body.name.trim();
-  if (typeof body.category === "string") out.category = body.category.trim();
+  //Menu item name
+  if (typeof body.name === "string") {
+    payload.name = body.name.trim();
+  }
 
+  //Category
+  if (typeof body.category === "string") {
+    payload.category = body.category.trim();
+  }
+
+  //Base Price
   if (body.basePrice !== undefined) {
-    const price = Number(body.basePrice);
-    if (!Number.isNaN(price) && price >= 0) out.basePrice = price;
-  }
-
-  if (body.availability !== undefined) {
-    out.availability =
-      body.availability === true || body.availability === "true";
-  }
-
-  if (body.variants !== undefined) {
-    try {
-      out.variants =
-        typeof body.variants === "string"
-          ? JSON.parse(body.variants || "[]")
-          : Array.isArray(body.variants)
-          ? body.variants
-          : [];
-    } catch {
-      out.variants = [];
+    const parsedPrice = Number(body.basePrice);
+    if (!Number.isNaN(parsedPrice) && parsedPrice >= 0) {
+      payload.basePrice = parsedPrice;
     }
   }
 
-  return out;
+  //Availability
+  if (body.availability !== undefined) {
+    payload.availability =
+      body.availability === true || body.availability === "true";
+  }
+
+  // Variants
+  if (body.variants !== undefined) {
+    try {
+      if (typeof body.variants === "string") {
+        payload.variants = JSON.parse(body.variants || "[]");
+      } else if (Array.isArray(body.variants)) {
+        payload.variants = body.variants;
+      } else {
+        payload.variants = [];
+      }
+    } catch {
+      payload.variants = [];
+    }
+  }
+
+  return payload;
 }
