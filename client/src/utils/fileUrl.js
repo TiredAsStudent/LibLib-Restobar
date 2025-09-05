@@ -3,7 +3,10 @@ export const serverUrl =
 
 export function fileUrl(path) {
   if (!path) return "";
+
+  // If it's already an absolute URL, return as is
   if (/^https?:\/\//i.test(path)) return path;
-  // remove extra slashes
+
+  // Ensure no double slashes (//) in the final URL
   return `${serverUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 }
